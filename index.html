@@ -41,7 +41,9 @@
     }
     .logo { font-family: 'Bebas Neue', sans-serif; font-size: 2rem; letter-spacing: 4px; background: linear-gradient(90deg, var(--neon), var(--neon2)); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; }
     .logo-sub { font-family: 'Share Tech Mono', monospace; font-size: 0.55rem; letter-spacing: 6px; color: var(--muted); -webkit-text-fill-color: var(--muted); display: block; margin-top: -6px; }
-    .nav-badge { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--neon); border: 1px solid var(--neon); padding: 4px 12px; letter-spacing: 3px; border-radius: 2px; animation: pulse-border 2s infinite; }
+    .discord-btn { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: #fff; background: #5865F2; padding: 6px 14px; letter-spacing: 2px; border-radius: 2px; text-decoration: none; transition: opacity 0.2s; }
+.discord-btn:hover { opacity: 0.85; }
+.nav-badge { font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; color: var(--neon); border: 1px solid var(--neon); padding: 4px 12px; letter-spacing: 3px; border-radius: 2px; animation: pulse-border 2s infinite; }
     @keyframes pulse-border { 0%,100%{box-shadow:0 0 0 0 rgba(0,245,255,0.4);}50%{box-shadow:0 0 0 4px rgba(0,245,255,0);} }
 
     /* DEAL BANNER */
@@ -161,6 +163,8 @@
     .btn-submit:hover { opacity: 0.85; }
     .success-msg { display: none; margin-top: 12px; font-family: 'Share Tech Mono', monospace; font-size: 0.7rem; letter-spacing: 2px; color: var(--neon); background: rgba(0,245,255,0.05); border: 1px solid rgba(0,245,255,0.2); padding: 10px 14px; border-radius: 2px; }
     .success-msg.show { display: block; }
+.friend-notice { font-family: 'Share Tech Mono', monospace; font-size: 0.68rem; letter-spacing: 2px; color: var(--gold); background: rgba(255,210,0,0.06); border: 1px solid rgba(255,210,0,0.25); padding: 10px 14px; border-radius: 2px; margin-bottom: 18px; line-height: 1.6; }
+.friend-notice strong { color: var(--neon); }
 
     footer { position: relative; z-index: 1; border-top: 1px solid var(--border); padding: 30px 40px; display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
     .footer-logo { font-family: 'Bebas Neue', sans-serif; font-size: 1.2rem; letter-spacing: 4px; color: var(--muted); }
@@ -180,7 +184,10 @@
   <div>
     <div class="logo">HyperBreak<span class="logo-sub">JAILBREAK CAR SHOP</span></div>
   </div>
-  <div class="nav-badge">LIVE INVENTORY</div>
+  <div style="display:flex;gap:12px;align-items:center;">
+    <a href="https://discord.gg/TDuSK6f6" target="_blank" class="discord-btn" id="discord-btn">JOIN DISCORD</a>
+    <div class="nav-badge">LIVE INVENTORY</div>
+  </div>
 </nav>
 
 <!-- SUNDAY DEAL BANNER -->
@@ -416,20 +423,21 @@ function renderReviews() {
       </div>
       <div class="step">
         <div class="step-num">2</div>
-        <div class="step-text"><strong>Include your Roblox username</strong> in the Vipps message so we know who to deliver to.</div>
+        <div class="step-text"><strong>Fill in your Roblox USERNAME and email below</strong> — your username is found in your Roblox profile URL, not your display name.</div>
       </div>
       <div class="step">
         <div class="step-num">3</div>
-        <div class="step-text"><strong>Enter your email below</strong> and add <strong style="color:var(--neon)">hapycake13</strong> on Roblox so we can deliver your car.</div>
+        <div class="step-text">After payment is confirmed, you will receive a <strong style="color:var(--neon)">friend request from hapycake13</strong> on Roblox — that's us! Accept it and we will deliver your car.</div>
       </div>
     </div>
+    <div class="friend-notice">⚠ Only accept friend requests from <strong>hapycake13</strong> — we will never ask you to pay again after ordering.</div>
     <div class="email-section">
-      <label class="email-label">// YOUR EMAIL ADDRESS</label>
+      <label class="email-label">// YOUR ROBLOX USERNAME (not display name)</label>
+      <input class="email-input" id="roblox-input" placeholder="e.g. CoolGamer123" style="width:100%;margin-bottom:10px;" maxlength="50"/>
       <div class="email-row">
-        <input class="email-input" id="email-input" type="email" placeholder="yourname@email.com" />
-        <button class="btn-submit" onclick="submitOrder()">CONFIRM</button>
+        <button class="btn-submit" onclick="submitOrder()" style="width:100%;padding:12px;">CONFIRM ORDER</button>
       </div>
-      <div class="success-msg" id="success-msg">✓ ORDER RECEIVED — WE WILL CONTACT YOU SOON</div>
+      <div class="success-msg" id="success-msg">✓ ORDER SENT — CHECK YOUR EMAIL AND WATCH FOR A FRIEND REQUEST FROM hapycake13!</div>
     </div>
   </div>
 </div>
@@ -437,27 +445,45 @@ function renderReviews() {
 <script>
   function openModal(car, price) {
     document.getElementById('modal-car-label').textContent = '// ' + car.toUpperCase() + ' — ' + price;
-    document.getElementById('email-input').value = '';
-    document.getElementById('email-input').disabled = false;
+    document.getElementById('roblox-input').value = '';
+    document.getElementById('roblox-input').disabled = false;
     document.getElementById('success-msg').classList.remove('show');
     var btn = document.querySelector('.btn-submit');
+    btn.textContent = 'CONFIRM ORDER';
     btn.disabled = false; btn.style.opacity = '1';
     document.getElementById('modal').classList.add('open');
   }
   function closeModal() { document.getElementById('modal').classList.remove('open'); }
   function closeModalBg(e) { if (e.target === document.getElementById('modal')) closeModal(); }
   document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-  function submitOrder() {
-    var email = document.getElementById('email-input').value.trim();
-    if (!email || !email.includes('@')) {
-      document.getElementById('email-input').style.borderColor = 'var(--neon2)';
-      setTimeout(() => document.getElementById('email-input').style.borderColor = '', 1000);
+  async function submitOrder() {
+    var roblox = document.getElementById('roblox-input').value.trim();
+    if (!roblox) {
+      document.getElementById('roblox-input').style.borderColor = 'var(--neon2)';
+      setTimeout(() => document.getElementById('roblox-input').style.borderColor = '', 1000);
       return;
     }
-    document.getElementById('success-msg').classList.add('show');
-    document.getElementById('email-input').disabled = true;
+    var car = document.getElementById('modal-car-label').textContent;
     var btn = document.querySelector('.btn-submit');
-    btn.disabled = true; btn.style.opacity = '0.4';
+    btn.textContent = '...'; btn.disabled = true;
+    try {
+      await fetch('https://api.web3forms.com/submit', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+        body: JSON.stringify({
+          access_key: '414a353c-0835-4f32-8e9b-9360ea892ee6',
+          subject: 'New HyperBreak Order — ' + car,
+          from_name: 'HyperBreak Shop',
+          to: 'u7094063502@gmail.com',
+          car: car,
+          roblox_username: roblox,
+          message: 'New order received! Roblox Username: ' + roblox + ' | Car: ' + car + ' | Their email: ' + email + ' | Check Vipps before delivering!'
+        })
+      });
+    } catch(e) {}
+    document.getElementById('success-msg').classList.add('show');
+    document.getElementById('roblox-input').disabled = true;
+    btn.style.opacity = '0.4';
   }
 </script>
 </body>
